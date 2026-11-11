@@ -25,7 +25,7 @@ def proteger_formularios():
 
 
 def aviso(mensaje, estado=400):
-    return render_template('mensaje.html', mensaje=mensaje), estado
+    return render_template('index.html', pagina='mensaje', mensaje=mensaje), estado
 
 
 # El POST al inicio solo muestra la vista previa del formulario.
@@ -62,7 +62,7 @@ def index(pagina):
     origen = request.args.get('origen', '').strip()
     destino = request.args.get('destino', '').strip()
     ruta = grafos.camino(grafo, origen, destino) if origen and destino else []
-    return render_template(pagina + '.html', pagina=pagina, libros=libros, consulta=consulta,
+    return render_template('index.html', pagina=pagina, libros=libros, consulta=consulta,
                            busqueda=busqueda, recorrido=recorrido, registro=registro,
                            inverso=inverso, pila=pila, grafo=grafo, ruta=ruta,
                            origen=origen, destino=destino)
@@ -86,7 +86,7 @@ def procesar():
         if accion in ['comprar', 'intercambiar', 'eliminar']:
             resumen = revisar(cabeza, accion, request.form)
             if request.form.get('confirmado') != 'si':
-                return render_template('confirmar.html', resumen=resumen,
+                return render_template('index.html', pagina='confirmar', resumen=resumen,
                                        accion=accion, datos=request.form)
         if accion == 'deshacer':
             cabeza, codigo = pilas.restaurar(cabeza, pila)
