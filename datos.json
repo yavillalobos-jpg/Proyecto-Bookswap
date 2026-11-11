@@ -1,0 +1,118 @@
+{
+  "version": 1,
+  "libros": [
+    [
+      402,
+      "Diseño de espacios",
+      "ejemplo 10",
+      "estuainte 10",
+      "uam",
+      "Intercambio",
+      0,
+      "",
+      "",
+      "arquitectura",
+      "Intercambiado",
+      "Yader",
+      "UNAN",
+      6767,
+      []
+    ],
+    [
+      801,
+      "Psicologia social",
+      "ejemplo 19",
+      "estudiante 19",
+      "ucn",
+      "Intercambio",
+      0,
+      "",
+      "",
+      "psicologia",
+      "Disponible",
+      "",
+      "",
+      0,
+      []
+    ],
+    [
+      112,
+      "Fundamento de programacion",
+      "PEPE",
+      "litzy",
+      "UAM",
+      "Venta",
+      700,
+      "",
+      "",
+      "ingeneria",
+      "Disponible",
+      "",
+      "",
+      0,
+      []
+    ],
+    [
+      1056,
+      "Don Quijote",
+      "litzy",
+      "Camila",
+      "UAM",
+      "Venta",
+      800,
+      "",
+      "",
+      "Comunicacion",
+      "Vendido",
+      "Yader",
+      "UAM",
+      0,
+      []
+    ],
+    [
+      70067,
+      "Don quijote",
+      "LITZY Mendoza",
+      "Camila",
+      "UAM",
+      "Venta",
+      800,
+      "",
+      "",
+      "Comunicacion",
+      "Disponible",
+      "",
+      "",
+      0,
+      []
+    ],
+    [
+      6767,
+      "Matematicas basica",
+      "PEPE",
+      "Yader",
+      "UNAN",
+      "Intercambio",
+      0,
+      "",
+      "",
+      "ingeneria",
+      "Intercambiado",
+      "estuainte 10",
+      "uam",
+      402,
+      []
+    ]
+  ],
+  "historial": [
+    "publicar: Libro publicado. Código(s): 6767",
+    "intercambiar: Intercambio registrado. Ambas publicaciones quedan cerradas. Código(s): 402 / 6767"
+  ],
+  "pila": [],
+  "conexiones": [
+    [
+      "UAM",
+      "UNAN"
+    ]
+  ]
+}

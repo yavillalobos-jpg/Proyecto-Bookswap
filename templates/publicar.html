@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% from 'portada.html' import portada %}
+{% block titulo %}Publicar libro{% endblock %}
+{% block contenido %}
+<section id="publicar" class="rounded-2xl border border-stone-200 bg-white p-5 sm:p-7 space-y-4">
+            
+            <h1 class="mb-5 font-serif text-3xl font-bold leading-tight sm:text-4xl">Publicar un libro</h1>
+            <div class="grid gap-6 md:grid-cols-[minmax(0,1fr)_15rem]"><form action="/publicar" method="post"><input type="hidden" name="token" value="{{ session['token'] }}">
+                <div class="mb-5 grid gap-4 sm:grid-cols-2">
+                    <label class="flex flex-col gap-2 text-sm font-medium" for="codigo-publicar">Código del libro<input class="w-full rounded-lg border border-stone-300 bg-white p-3" id="codigo-publicar" name="codigo" value="{{ request.form.get('codigo', '') }}" type="number" min="1" step="1" required></label>
+                    <label class="flex flex-col gap-2 text-sm font-medium" for="titulo">Título<input class="w-full rounded-lg border border-stone-300 bg-white p-3" id="titulo" name="titulo" value="{{ request.form.get('titulo', '') }}" type="text" required></label>
+                    <label class="flex flex-col gap-2 text-sm font-medium" for="autor">Autor<input class="w-full rounded-lg border border-stone-300 bg-white p-3" id="autor" name="autor" value="{{ request.form.get('autor', '') }}" type="text" required></label>
+                    <label class="flex flex-col gap-2 text-sm font-medium" for="carrera">Carrera<input class="w-full rounded-lg border border-stone-300 bg-white p-3" list="carreras" id="carrera" name="carrera" value="{{ request.form.get('carrera', '') }}" type="text" required></label>
+                    <label class="flex flex-col gap-2 text-sm font-medium" for="propietario">Tu nombre<input class="w-full rounded-lg border border-stone-300 bg-white p-3" id="propietario" name="propietario" value="{{ request.form.get('propietario', '') }}" type="text" required></label>
+                    <label class="flex flex-col gap-2 text-sm font-medium" for="universidad-publicar">Tu universidad<input class="w-full rounded-lg border border-stone-300 bg-white p-3" id="universidad-publicar" name="universidad" value="{{ request.form.get('universidad', '') }}" type="text" required></label>
+                    <label class="flex flex-col gap-2 text-sm font-medium" for="modalidad">Modalidad
+                        <select class="rounded-lg border border-stone-300 bg-white p-3" id="modalidad" name="modalidad" required>
+                            <option value="">Seleccioná una opción</option>
+                            <option value="Venta" {% if request.form.get('modalidad') == 'Venta' %}selected{% endif %}>Venta</option>
+                            <option value="Intercambio" {% if request.form.get('modalidad') == 'Intercambio' %}selected{% endif %}>Intercambio</option>
+                            <option value="Préstamo" {% if request.form.get('modalidad') == 'Préstamo' %}selected{% endif %}>Préstamo</option>
+                        </select>
+                    </label>
+                    <label class="flex flex-col gap-2 text-sm font-medium" for="precio">Precio de venta (C$)<input class="w-full rounded-lg border border-stone-300 bg-white p-3" id="precio" name="precio" value="{{ request.form.get('precio', '') }}" type="number" min="1" step="1"></label>
+                </div>
+                <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-emerald-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-800 focus-visible:outline-2 disabled:opacity-50">Publicar libro</button>
+                <button type="submit" formaction="/vista/publicar" formmethod="post" formnovalidate class="rounded-lg border border-emerald-800 px-4 py-2 text-sm font-semibold text-emerald-900">Ver portada</button>
+            </form>
+                <aside class="min-w-0 self-start rounded-xl border border-stone-200">
+                    {{ portada(request.form.get('titulo', ''), request.form.get('autor', ''), request.form.get('carrera', '')) }}
+                    <p class="p-3 text-sm text-stone-600">Vista previa según la carrera.</p>
+                </aside>
+            </div>
+            <datalist id="carreras">
+                {% for nombre in ['Ingeniería', 'Arquitectura', 'Psicología', 'Matemáticas', 'Comunicación', 'Literatura', 'Medicina'] %}
+                <option value="{{ nombre }}"></option>
+                {% endfor %}
+            </datalist>
+        </section>
+{% endblock %}

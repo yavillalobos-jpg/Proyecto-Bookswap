@@ -1,0 +1,28 @@
+{# Una misma silueta para el catálogo y la vista previa. #}
+{% macro portada(titulo, autor, carrera) %}
+  {% set area = carrera|trim|lower %}
+  {% if 'ingen' in area or 'sistema' in area or 'comput' in area or 'tecnolog' in area %}
+    {% set papel, cubierta, signo = 'bg-teal-50', 'bg-teal-900 text-teal-50', '{ }' %}
+  {% elif 'arquitect' in area or 'diseño' in area %}
+    {% set papel, cubierta, signo = 'bg-stone-100', 'bg-stone-700 text-amber-50', '△' %}
+  {% elif 'psicolog' in area %}
+    {% set papel, cubierta, signo = 'bg-fuchsia-50', 'bg-fuchsia-900 text-fuchsia-50', 'Ψ' %}
+  {% elif 'matem' in area or 'estad' in area %}
+    {% set papel, cubierta, signo = 'bg-orange-50', 'bg-orange-800 text-orange-50', 'Σ' %}
+  {% elif 'comunica' in area or 'literat' in area %}
+    {% set papel, cubierta, signo = 'bg-amber-50', 'bg-amber-200 text-amber-950', '✦' %}
+  {% elif 'medic' in area or 'enfermer' in area or 'odont' in area %}
+    {% set papel, cubierta, signo = 'bg-sky-50', 'bg-sky-800 text-sky-50', '+' %}
+  {% else %}
+    {% set papel, cubierta, signo = 'bg-stone-100', 'bg-emerald-800 text-emerald-50', '❖' %}
+  {% endif %}
+  <div class="{{ papel }} grid min-h-64 place-items-center overflow-hidden rounded-t-xl px-4 py-7" aria-hidden="true">
+    <div class="{{ cubierta }} relative flex h-52 w-36 max-w-full -rotate-6 flex-col overflow-hidden rounded-r-md rounded-l-sm border-l-4 border-black/20 px-4 py-4 shadow-xl">
+      <span class="absolute inset-y-0 left-1 border-l border-white/20"></span>
+      <span class="text-[9px] font-semibold uppercase tracking-widest opacity-80">BookSwap</span>
+      <strong class="mt-3 line-clamp-3 break-words font-serif text-xl leading-tight">{{ titulo or 'Título del libro' }}</strong>
+      <span class="my-auto self-center font-serif text-4xl opacity-75">{{ signo }}</span>
+      <span class="truncate text-[10px]">{{ autor or 'Autor' }}</span>
+    </div>
+  </div>
+{% endmacro %}
