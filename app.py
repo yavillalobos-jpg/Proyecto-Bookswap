@@ -9,6 +9,7 @@ import arboles
 import historial
 import pilas
 import grafos
+import burbujas
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
@@ -55,6 +56,21 @@ def index(pagina):
         raiz = arboles.construir(cabeza)
         libro, recorrido = arboles.buscar(raiz, codigo)
         libros = [libro] if libro is not None else []
+    # Ordenamiento burbuja: solo cambia el orden en que se muestran los libros.
+    campo = request.args.get('ordenar', '')
+    metodo = request.args.get('metodo', 'mejorada')
+    descendente = request.args.get('sentido') == 'desc'
+    estadistica = None
+    comparacion = []
+    nombre_metodo = ''
+    if campo:
+        try:
+            nombre_metodo = burbujas.nombre_metodo(metodo)
+            # Se compara sobre la lista original (sin ordenar) para que sea justo.
+            comparacion = burbujas.comparar_metodos(libros, campo, descendente)
+            libros, estadistica = burbujas.ordenar(libros, metodo, campo, descendente)
+        except ValueError as error:
+            return aviso(str(error))
     extremos = historial.construir(eventos)
     inverso = request.args.get('orden') == 'reciente'
     registro = historial.recorrer(extremos, inverso)
@@ -65,7 +81,11 @@ def index(pagina):
     return render_template('index.html', pagina=pagina, libros=libros, consulta=consulta,
                            busqueda=busqueda, recorrido=recorrido, registro=registro,
                            inverso=inverso, pila=pila, grafo=grafo, ruta=ruta,
-                           origen=origen, destino=destino)
+                           origen=origen, destino=destino, campos=burbujas.CAMPOS,
+                           metodos=burbujas.METODOS, campo=campo, metodo=metodo,
+                           descendente=descendente, estadistica=estadistica,
+                           nombre_metodo=nombre_metodo,
+                           comparacion=comparacion)
 
 
 @app.route('/publicar', methods=['POST'])

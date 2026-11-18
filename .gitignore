@@ -1,0 +1,5 @@
+# Archivos que Python genera solo al ejecutar; no hace falta subirlos.
+__pycache__/
+*.pyc
+# Archivo temporal que se crea un instante al guardar datos.json.
+datos.json.tmp

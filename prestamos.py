@@ -1,10 +1,6 @@
 # COLAS FIFO: append() agrega al final y pop(0) retira la primera solicitud.
 from catalogo import buscar_codigo
-from entradas import texto, entero
-
-
-def misma_persona(nombre, universidad, otro_nombre, otra_universidad):
-    return nombre.lower() == otro_nombre.lower() and universidad.lower() == otra_universidad.lower()
+from entradas import texto, entero, misma_persona
 
 
 def operar_prestamo(cabeza, accion, datos):

@@ -9,7 +9,6 @@
 </style>
 {% endraw %}
 </head>
-</style></head>
 {# Una misma silueta para el catálogo y la vista previa. #}
 {% macro portada(titulo, autor, carrera) %}
   {% set area = carrera|trim|lower %}
@@ -85,7 +84,25 @@
 <div class="grid gap-5 md:grid-cols-2">
 <form method="get" action="/#catalogo" class="grid content-end gap-3 rounded-xl border border-stone-200 bg-white p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"><label class="flex flex-col gap-2 text-sm font-medium">Buscar en el catálogo<input class="w-full rounded-lg border border-stone-300 bg-white p-3" name="q" placeholder="Título, autor o carrera" value="{{ consulta }}"></label><button class="inline-flex items-center justify-center rounded-lg bg-emerald-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-800 focus-visible:outline-2 disabled:opacity-50">Buscar texto</button></form>
 <form method="get" action="/#catalogo" class="grid content-end gap-3 rounded-xl border border-stone-200 bg-white p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end"><label class="flex flex-col gap-2 text-sm font-medium">Buscar por código<input class="w-full rounded-lg border border-stone-300 bg-white p-3" name="codigo_arbol" placeholder="Ej. 402" value="{{ busqueda }}" type="number" min="1"></label><button class="inline-flex items-center justify-center rounded-lg bg-emerald-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-800 focus-visible:outline-2 disabled:opacity-50">Buscar código</button></form>
-</div>{% if consulta or busqueda %}<p class="mt-3"><a class="underline" href="/">Limpiar búsqueda</a></p>{% endif %}
+</div>
+{# Ordenamiento burbuja: conserva la búsqueda actual con campos ocultos. #}
+<form method="get" action="/#catalogo" class="mt-6 rounded-xl border border-stone-200 bg-white p-4">
+{% if consulta %}<input type="hidden" name="q" value="{{ consulta }}">{% endif %}
+{% if busqueda %}<input type="hidden" name="codigo_arbol" value="{{ busqueda }}">{% endif %}
+<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 sm:items-end">
+<label class="flex flex-col gap-2 text-sm font-medium">Ordenar por<select class="rounded-lg border border-stone-300 bg-white p-3" name="ordenar" required>{% for clave, posicion, nombre in campos %}<option value="{{ clave }}" {% if clave == campo %}selected{% endif %}>{{ nombre }}</option>{% endfor %}</select></label>
+<label class="flex flex-col gap-2 text-sm font-medium">Método burbuja<select class="rounded-lg border border-stone-300 bg-white p-3" name="metodo">{% for clave, nombre in metodos %}<option value="{{ clave }}" {% if clave == metodo %}selected{% endif %}>{{ nombre }}</option>{% endfor %}</select></label>
+<label class="flex flex-col gap-2 text-sm font-medium">Sentido<select class="rounded-lg border border-stone-300 bg-white p-3" name="sentido"><option value="asc">Ascendente (A → Z, 0 → 9)</option><option value="desc" {% if descendente %}selected{% endif %}>Descendente (Z → A, 9 → 0)</option></select></label>
+<button class="inline-flex items-center justify-center rounded-lg bg-emerald-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-800 focus-visible:outline-2 disabled:opacity-50">Ordenar</button>
+</div></form>
+{% if estadistica %}
+<p class="mt-3 text-sm">Ordenado con <strong>{{ nombre_metodo }}</strong>: {{ estadistica[0] }} comparaciones, {{ estadistica[1] }} intercambios y {{ estadistica[2] }} pasadas.</p>
+<p class="mt-3 text-sm text-stone-600">Los cinco métodos sobre los mismos {{ libros|length }} libros:</p>
+<ul class="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 text-sm">
+{% for nombre, comparaciones, intercambios, pasadas in comparacion %}<li class="rounded-xl border p-4 {% if nombre == nombre_metodo %}border-emerald-900 bg-emerald-50{% else %}border-stone-200 bg-white{% endif %}"><strong>{{ nombre }}</strong><br>{{ comparaciones }} comparaciones<br>{{ intercambios }} intercambios<br>{{ pasadas }} pasadas</li>{% endfor %}
+</ul>
+{% endif %}
+{% if consulta or busqueda or campo %}<p class="mt-3"><a class="underline" href="/">Limpiar búsqueda y orden</a></p>{% endif %}
 {% if busqueda %}<p>Recorrido del árbol: {{ recorrido | join(' → ') if recorrido else 'Árbol vacío' }}.</p>{% endif %}
 
             <div class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
