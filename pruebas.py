@@ -61,6 +61,10 @@ def probar_burbujas():
     ordenada = burbujas.ordenar(libros, 'clasica', 'codigo')[0]
     assert burbujas.ordenar(ordenada, 'mejorada', 'codigo')[1] == [len(libros) - 1, 0, 1]
     assert burbujas.ordenar(ordenada, 'clasica', 'codigo')[1][2] == len(libros) - 1
+    # La versión con nodos hace el mismo trabajo que la mejorada.
+    for campo in ['titulo', 'precio', 'codigo']:
+        mejorada = burbujas.ordenar(libros, 'mejorada', campo)
+        assert burbujas.ordenar(libros, 'enlazada', campo) == mejorada
     # La burbuja clásica siempre hace (n-1)*(n-1) comparaciones.
     assert burbujas.ordenar(libros, 'clasica', 'precio')[1][0] == (len(libros) - 1) ** 2
     for metodo, campo in [['metodo_falso', 'titulo'], ['clasica', 'campo_falso']]:
@@ -166,14 +170,20 @@ def probar():
         # La interfaz usa Tailwind compilado dentro de la página, sin JavaScript.
         assert b'tailwindcss' in cliente.get('/').data
         assert b'<script' not in cliente.get('/').data
-        # Ordenamiento burbuja desde la página web.
-        pagina = cliente.get('/?ordenar=precio&metodo=peine&sentido=desc')
-        assert pagina.status_code == 200 and b'comparaciones' in pagina.data
+        # Ordenar desde la página usa la burbuja, pero no muestra términos técnicos.
+        pagina = cliente.get('/?ordenar=precio-desc')
+        assert pagina.status_code == 200
         texto_pagina = pagina.data.decode('utf-8')
+        assert 'urbuja' not in texto_pagina and 'comparaciones' not in texto_pagina
         assert texto_pagina.index('Don Quijote') < texto_pagina.index('Fundamentos de programación')
-        assert cliente.get('/?q=uam&ordenar=titulo&metodo=bidireccional').status_code == 200
-        assert cliente.get('/?ordenar=titulo&metodo=nada').status_code == 400
+        pagina = cliente.get('/?ordenar=titulo').data.decode('utf-8')
+        assert pagina.index('Don Quijote') < pagina.index('Psicología social')
+        assert cliente.get('/?q=uam&ordenar=autor').status_code == 200
+        antes = Path(archivos.ARCHIVO).read_bytes()
+        assert cliente.get('/?ordenar=titulo-desc').status_code == 200
+        assert Path(archivos.ARCHIVO).read_bytes() == antes  # Ordenar no guarda nada.
         assert cliente.get('/?ordenar=nada').status_code == 400
+        assert cliente.get('/?ordenar=precio-nada').status_code == 400
         # Entrada HTML se muestra como texto, no se ejecuta.
         enviar('publicar',dict(codigo=90003,titulo='<script>x</script>',autor='A',
                propietario='P',universidad='UNI',carrera='Arte',modalidad='Préstamo'))
@@ -187,7 +197,7 @@ def probar():
     assert Path(original).read_bytes() == contenido
     for archivo in Path(__file__).parent.glob('*.py'):
         assert not any(isinstance(n,ast.ClassDef) for n in ast.walk(ast.parse(archivo.read_text(encoding='utf-8'))))
-    print('OK: operaciones, FIFO, LIFO, árbol, doble enlace, grafo/BFS, 5 burbujas, JSON, validaciones y formularios. Datos originales intactos.')
+    print('OK: operaciones, FIFO, LIFO, árbol, doble enlace, grafo/BFS, 6 burbujas, JSON, validaciones y formularios. Datos originales intactos.')
 
 
 if __name__ == '__main__':

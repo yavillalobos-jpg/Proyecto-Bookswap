@@ -12,8 +12,18 @@ import grafos
 import burbujas
 
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(32)
+# Clave fija: si se reinicia el servidor, las páginas abiertas siguen funcionando.
+# Es un proyecto local; en un sitio real esta clave no iría escrita en el código.
+app.secret_key = 'bookswap-clave-local-del-proyecto'
 app.config['MAX_CONTENT_LENGTH'] = 64 * 1024
+
+# Opciones del selector "Ordenar por": [valor, texto visible].
+# El valor es "campo" (ascendente) o "campo-desc" (descendente).
+OPCIONES_ORDEN = [['', 'Orden de publicación'], ['titulo', 'Título (A → Z)'],
+                  ['titulo-desc', 'Título (Z → A)'], ['precio', 'Precio: menor a mayor'],
+                  ['precio-desc', 'Precio: mayor a menor'], ['autor', 'Autor (A → Z)'],
+                  ['universidad', 'Universidad (A → Z)'], ['carrera', 'Carrera (A → Z)'],
+                  ['codigo', 'Código']]
 
 
 @app.before_request
@@ -56,21 +66,14 @@ def index(pagina):
         raiz = arboles.construir(cabeza)
         libro, recorrido = arboles.buscar(raiz, codigo)
         libros = [libro] if libro is not None else []
-    # Ordenamiento burbuja: solo cambia el orden en que se muestran los libros.
-    campo = request.args.get('ordenar', '')
-    metodo = request.args.get('metodo', 'mejorada')
-    descendente = request.args.get('sentido') == 'desc'
-    estadistica = None
-    comparacion = []
-    nombre_metodo = ''
-    if campo:
-        try:
-            nombre_metodo = burbujas.nombre_metodo(metodo)
-            # Se compara sobre la lista original (sin ordenar) para que sea justo.
-            comparacion = burbujas.comparar_metodos(libros, campo, descendente)
-            libros, estadistica = burbujas.ordenar(libros, metodo, campo, descendente)
-        except ValueError as error:
-            return aviso(str(error))
+    # Ordenar el catálogo con la burbuja sobre lista enlazada (burbujas.py).
+    # Solo cambia el orden en que se muestran los libros; no se guarda nada.
+    orden_elegido = request.args.get('ordenar', '')
+    if orden_elegido:
+        if orden_elegido not in [valor for valor, nombre in OPCIONES_ORDEN]:
+            return aviso('Opción de orden desconocida.')
+        campo, _, sentido = orden_elegido.partition('-')
+        libros = burbujas.ordenar(libros, 'enlazada', campo, sentido == 'desc')[0]
     extremos = historial.construir(eventos)
     inverso = request.args.get('orden') == 'reciente'
     registro = historial.recorrer(extremos, inverso)
@@ -81,11 +84,8 @@ def index(pagina):
     return render_template('index.html', pagina=pagina, libros=libros, consulta=consulta,
                            busqueda=busqueda, recorrido=recorrido, registro=registro,
                            inverso=inverso, pila=pila, grafo=grafo, ruta=ruta,
-                           origen=origen, destino=destino, campos=burbujas.CAMPOS,
-                           metodos=burbujas.METODOS, campo=campo, metodo=metodo,
-                           descendente=descendente, estadistica=estadistica,
-                           nombre_metodo=nombre_metodo,
-                           comparacion=comparacion)
+                           origen=origen, destino=destino,
+                           opciones_orden=OPCIONES_ORDEN, orden_elegido=orden_elegido)
 
 
 @app.route('/publicar', methods=['POST'])

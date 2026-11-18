@@ -1,4 +1,4 @@
-# ORDENAMIENTO BURBUJA: cinco variantes, sin clases.
+# ORDENAMIENTO BURBUJA: seis variantes, sin clases.
 # Todas reciben una lista de libros (nodos del catálogo) y devuelven:
 #   [lista_ordenada, [comparaciones, intercambios, pasadas]]
 # Trabajan sobre una COPIA de la lista: la lista enlazada del catálogo no cambia.
@@ -12,7 +12,8 @@ CAMPOS = [['codigo', 0, 'Código'], ['titulo', 1, 'Título'], ['autor', 2, 'Auto
 # Métodos disponibles: [clave del formulario, nombre visible].
 METODOS = [['clasica', 'Burbuja clásica'], ['mejorada', 'Burbuja mejorada'],
            ['bidireccional', 'Burbuja bidireccional'],
-           ['par_impar', 'Burbuja par-impar'], ['peine', 'Burbuja de peine']]
+           ['par_impar', 'Burbuja par-impar'], ['peine', 'Burbuja de peine'],
+           ['enlazada', 'Burbuja en lista enlazada']]
 
 
 def nombre_metodo(metodo):
@@ -150,6 +151,40 @@ def burbuja_peine(libros, posicion, descendente=False):
     return [lista, contador]
 
 
+def burbuja_lista_enlazada(libros, posicion, descendente=False):
+    # Burbuja recorriendo NODOS en lugar de posiciones de una lista.
+    # Se arma una lista enlazada auxiliar: cada nodo es [libro, siguiente],
+    # igual que el catálogo usa nodo[15] para apuntar al siguiente.
+    # No se cambian los enlaces: se intercambia el libro guardado en dos nodos
+    # vecinos. Así el catálogo guardado en datos.json no cambia de orden.
+    cabeza = None
+    for i in range(len(libros) - 1, -1, -1):
+        cabeza = [libros[i], cabeza]
+    contador = [0, 0, 0]
+    fin = None  # Desde este nodo hasta el final, todo ya está ordenado.
+    hubo_cambio = True
+    while hubo_cambio and cabeza is not None and cabeza[1] is not fin:
+        hubo_cambio = False
+        contador[2] += 1
+        actual = cabeza
+        while actual[1] is not fin:
+            siguiente = actual[1]
+            if fuera_de_orden(actual[0], siguiente[0], posicion, descendente, contador):
+                actual[0], siguiente[0] = siguiente[0], actual[0]
+                contador[1] += 1
+                hubo_cambio = True
+            actual = siguiente
+        # El último nodo revisado ya tiene el valor mayor: queda fijo.
+        fin = actual
+    # Se recorre la lista enlazada para devolverla como lista y mostrarla.
+    lista = []
+    actual = cabeza
+    while actual is not None:
+        lista.append(actual[0])
+        actual = actual[1]
+    return [lista, contador]
+
+
 def ordenar(libros, metodo, campo, descendente=False):
     # Punto de entrada usado por la página web.
     posicion = posicion_campo(campo)
@@ -163,11 +198,13 @@ def ordenar(libros, metodo, campo, descendente=False):
         return burbuja_par_impar(libros, posicion, descendente)
     if metodo == 'peine':
         return burbuja_peine(libros, posicion, descendente)
+    if metodo == 'enlazada':
+        return burbuja_lista_enlazada(libros, posicion, descendente)
     raise ValueError('Método de ordenamiento desconocido.')
 
 
 def comparar_metodos(libros, campo, descendente=False):
-    # Ejecuta los cinco métodos sobre los mismos datos para comparar su trabajo.
+    # Ejecuta todos los métodos sobre los mismos datos para comparar su trabajo.
     resultado = []
     for clave, nombre in METODOS:
         contador = ordenar(libros, clave, campo, descendente)[1]
