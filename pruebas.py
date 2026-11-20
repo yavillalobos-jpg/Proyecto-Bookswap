@@ -10,15 +10,79 @@ import archivos
 import arboles
 import grafos
 import historial
-from catalogo import buscar_codigo
+import burbujas
+from catalogo import buscar_codigo, crear_nodo
+
+
+def libro_fijo(codigo, titulo, autor, propietario, universidad, modalidad, precio,
+               carrera, estado='Disponible', destinatario='', universidad_destino=''):
+    return [codigo, titulo, autor, propietario, universidad, modalidad, precio, '', '',
+            carrera, estado, destinatario, universidad_destino, 0, []]
+
+
+# Datos fijos de prueba: así las pruebas no dependen de lo que tenga datos.json.
+DATOS_PRUEBA = {
+    'version': 1,
+    'libros': [
+        libro_fijo(402, 'Diseño de espacios', 'Autor A', 'Estudiante 10', 'UAM', 'Intercambio', 0, 'Arquitectura'),
+        libro_fijo(801, 'Psicología social', 'Autor B', 'Estudiante 19', 'UCN', 'Intercambio', 0, 'Psicología'),
+        libro_fijo(112, 'Fundamentos de programación', 'Pepe', 'litzy', 'UAM', 'Venta', 700, 'Ingeniería'),
+        libro_fijo(1056, 'Don Quijote', 'Cervantes', 'Camila', 'UAM', 'Venta', 800, 'Comunicación',
+                   'Vendido', 'Yader', 'UAM'),
+    ],
+    'historial': [], 'pila': [], 'conexiones': [],
+}
+
+
+def probar_burbujas():
+    metodos = [clave for clave, nombre in burbujas.METODOS]
+    titulos = ['Química', 'álgebra', 'Biología', 'cálculo', 'Física', 'Arte', 'Biología', 'Zoología']
+    libros = []
+    for i in range(len(titulos)):
+        libros.append(crear_nodo((i * 37) % 11 + 1, titulos[i], 'Autor', 'P', 'UNI',
+                                 'Venta', (i * 53) % 17 + 1))
+    for clave, posicion, nombre in burbujas.CAMPOS:
+        esperado = sorted(burbujas.valor(l, posicion) for l in libros)
+        for metodo in metodos:
+            for descendente in [False, True]:
+                ordenados, contador = burbujas.ordenar(libros, metodo, clave, descendente)
+                obtenido = [burbujas.valor(l, posicion) for l in ordenados]
+                assert obtenido == (esperado[::-1] if descendente else esperado), (metodo, clave)
+                assert contador[0] >= contador[1] and contador[2] >= 1
+    # No modifica la lista original.
+    copia = libros[:]
+    burbujas.ordenar(libros, 'clasica', 'titulo')
+    assert libros == copia
+    # Casos borde: lista vacía y de un elemento.
+    for metodo in metodos:
+        assert burbujas.ordenar([], metodo, 'codigo')[0] == []
+        assert burbujas.ordenar(libros[:1], metodo, 'codigo')[0] == libros[:1]
+    # Sobre una lista ya ordenada, la mejorada se detiene en una sola pasada.
+    ordenada = burbujas.ordenar(libros, 'clasica', 'codigo')[0]
+    assert burbujas.ordenar(ordenada, 'mejorada', 'codigo')[1] == [len(libros) - 1, 0, 1]
+    assert burbujas.ordenar(ordenada, 'clasica', 'codigo')[1][2] == len(libros) - 1
+    # La versión con nodos hace el mismo trabajo que la mejorada.
+    for campo in ['titulo', 'precio', 'codigo']:
+        mejorada = burbujas.ordenar(libros, 'mejorada', campo)
+        assert burbujas.ordenar(libros, 'enlazada', campo) == mejorada
+    # La burbuja clásica siempre hace (n-1)*(n-1) comparaciones.
+    assert burbujas.ordenar(libros, 'clasica', 'precio')[1][0] == (len(libros) - 1) ** 2
+    for metodo, campo in [['metodo_falso', 'titulo'], ['clasica', 'campo_falso']]:
+        try:
+            burbujas.ordenar(libros, metodo, campo)
+            assert False, 'debía rechazar ' + metodo + ' / ' + campo
+        except ValueError:
+            pass
+    assert len(burbujas.comparar_metodos(libros, 'titulo')) == len(metodos)
 
 
 def probar():
+    probar_burbujas()
     original = archivos.ARCHIVO
     contenido = Path(original).read_bytes()
     with tempfile.TemporaryDirectory() as carpeta:
         archivos.ARCHIVO = os.path.join(carpeta, 'datos.json')
-        Path(archivos.ARCHIVO).write_bytes(contenido)
+        Path(archivos.ARCHIVO).write_text(json.dumps(DATOS_PRUEBA, ensure_ascii=False), encoding='utf-8')
         app.app.config['TESTING'] = True
         cliente = app.app.test_client()
         assert cliente.get('/').status_code == 200
@@ -103,8 +167,23 @@ def probar():
         assert grafos.camino(grafo,'NO EXISTE','UNI') == []
         assert cliente.get('/?origen=UAM&destino=UCN').status_code == 200
         assert cliente.get('/?orden=reciente').status_code == 200
-        assert cliente.get('/static/tailwind.css').status_code == 200
+        # La interfaz usa Tailwind compilado dentro de la página, sin JavaScript.
+        assert b'tailwindcss' in cliente.get('/').data
         assert b'<script' not in cliente.get('/').data
+        # Ordenar desde la página usa la burbuja, pero no muestra términos técnicos.
+        pagina = cliente.get('/?ordenar=precio-desc')
+        assert pagina.status_code == 200
+        texto_pagina = pagina.data.decode('utf-8')
+        assert 'urbuja' not in texto_pagina and 'comparaciones' not in texto_pagina
+        assert texto_pagina.index('Don Quijote') < texto_pagina.index('Fundamentos de programación')
+        pagina = cliente.get('/?ordenar=titulo').data.decode('utf-8')
+        assert pagina.index('Don Quijote') < pagina.index('Psicología social')
+        assert cliente.get('/?q=uam&ordenar=autor').status_code == 200
+        antes = Path(archivos.ARCHIVO).read_bytes()
+        assert cliente.get('/?ordenar=titulo-desc').status_code == 200
+        assert Path(archivos.ARCHIVO).read_bytes() == antes  # Ordenar no guarda nada.
+        assert cliente.get('/?ordenar=nada').status_code == 400
+        assert cliente.get('/?ordenar=precio-nada').status_code == 400
         # Entrada HTML se muestra como texto, no se ejecuta.
         enviar('publicar',dict(codigo=90003,titulo='<script>x</script>',autor='A',
                propietario='P',universidad='UNI',carrera='Arte',modalidad='Préstamo'))
@@ -117,8 +196,8 @@ def probar():
         archivos.ARCHIVO = original
     assert Path(original).read_bytes() == contenido
     for archivo in Path(__file__).parent.glob('*.py'):
-        assert not any(isinstance(n,ast.ClassDef) for n in ast.walk(ast.parse(archivo.read_text())))
-    print('OK: operaciones, FIFO, LIFO, árbol, doble enlace, grafo/BFS, JSON, validaciones y formularios. Datos originales intactos.')
+        assert not any(isinstance(n,ast.ClassDef) for n in ast.walk(ast.parse(archivo.read_text(encoding='utf-8'))))
+    print('OK: operaciones, FIFO, LIFO, árbol, doble enlace, grafo/BFS, 6 burbujas, JSON, validaciones y formularios. Datos originales intactos.')
 
 
 if __name__ == '__main__':

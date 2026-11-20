@@ -1,12 +1,12 @@
 # Funciones para procesar datos de formularios, sin input() ni print().
 # Las operaciones trabajan sobre la lista enlazada del catálogo.
 from catalogo import crear_nodo, agregar_libro, buscar_codigo, quitar_libro
-from entradas import texto, entero
+from entradas import texto, entero, misma_persona
 from prestamos import operar_prestamo
+
 
 def disponible(libro):
     return libro[10] == "Disponible" and not libro[7] and not libro[14]
-
 
 
 def buscar(cabeza, datos, campo='codigo'):
@@ -14,11 +14,6 @@ def buscar(cabeza, datos, campo='codigo'):
     if libro is None:
         raise ValueError('No existe el libro indicado en ' + campo + '.')
     return libro
-
-
-def misma_persona(nombre, universidad, otro_nombre, otra_universidad):
-    return (nombre.lower() == otro_nombre.lower()
-            and universidad.lower() == otra_universidad.lower())
 
 
 def listar_libros(cabeza, consulta=''):
