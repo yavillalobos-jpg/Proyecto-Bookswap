@@ -1,0 +1,73 @@
+entorno,distribucion,n,metodo,comparaciones,intercambios,pasadas,tiempo_ms
+entorno2,aleatoria,100,Burbuja clásica,9801,2151,99,3.27
+entorno2,aleatoria,100,Burbuja mejorada,4872,2151,87,1.72
+entorno2,aleatoria,100,Burbuja bidireccional,3410,2151,44,1.28
+entorno2,aleatoria,100,Burbuja par-impar,4455,2151,90,1.59
+entorno2,aleatoria,100,Burbuja de peine,1201,269,15,0.39
+entorno2,aleatoria,100,Burbuja en lista enlazada,4872,2151,87,1.78
+entorno2,aleatoria,500,Burbuja clásica,249001,65826,499,87.43
+entorno2,aleatoria,500,Burbuja mejorada,124315,65826,470,46.41
+entorno2,aleatoria,500,Burbuja bidireccional,97954,65826,268,38.86
+entorno2,aleatoria,500,Burbuja par-impar,120259,65826,482,45.54
+entorno2,aleatoria,500,Burbuja de peine,9370,1958,22,3.1
+entorno2,aleatoria,500,Burbuja en lista enlazada,124315,65826,470,47.09
+entorno2,aleatoria,1000,Burbuja clásica,998001,246619,999,342.09
+entorno2,aleatoria,1000,Burbuja mejorada,497670,246619,939,188.6
+entorno2,aleatoria,1000,Burbuja bidireccional,376244,246619,503,151.55
+entorno2,aleatoria,1000,Burbuja par-impar,473526,246619,948,181.04
+entorno2,aleatoria,1000,Burbuja de peine,22709,4583,26,7.52
+entorno2,aleatoria,1000,Burbuja en lista enlazada,497670,246619,939,185.7
+entorno2,aleatoria,2000,Burbuja clásica,3996001,972436,1999,1399.38
+entorno2,aleatoria,2000,Burbuja mejorada,1995840,972436,1920,756.26
+entorno2,aleatoria,2000,Burbuja bidireccional,1475224,972436,976,593.34
+entorno2,aleatoria,2000,Burbuja par-impar,1975012,972436,1976,764.89
+entorno2,aleatoria,2000,Burbuja de peine,49380,9958,28,16.98
+entorno2,aleatoria,2000,Burbuja en lista enlazada,1995840,972436,1920,744.31
+entorno2,ordenada,100,Burbuja clásica,9801,0,99,2.9
+entorno2,ordenada,100,Burbuja mejorada,99,0,1,0.03
+entorno2,ordenada,100,Burbuja bidireccional,99,0,1,0.03
+entorno2,ordenada,100,Burbuja par-impar,99,0,2,0.03
+entorno2,ordenada,100,Burbuja de peine,1003,0,13,0.3
+entorno2,ordenada,100,Burbuja en lista enlazada,99,0,1,0.05
+entorno2,ordenada,500,Burbuja clásica,249001,0,499,75.18
+entorno2,ordenada,500,Burbuja mejorada,499,0,1,0.16
+entorno2,ordenada,500,Burbuja bidireccional,499,0,1,0.15
+entorno2,ordenada,500,Burbuja par-impar,499,0,2,0.15
+entorno2,ordenada,500,Burbuja de peine,8372,0,20,2.5
+entorno2,ordenada,500,Burbuja en lista enlazada,499,0,1,0.24
+entorno2,ordenada,1000,Burbuja clásica,998001,0,999,304.85
+entorno2,ordenada,1000,Burbuja mejorada,999,0,1,0.31
+entorno2,ordenada,1000,Burbuja bidireccional,999,0,1,0.3
+entorno2,ordenada,1000,Burbuja par-impar,999,0,2,0.3
+entorno2,ordenada,1000,Burbuja de peine,18713,0,22,5.59
+entorno2,ordenada,1000,Burbuja en lista enlazada,999,0,1,0.48
+entorno2,ordenada,2000,Burbuja clásica,3996001,0,1999,1230.35
+entorno2,ordenada,2000,Burbuja mejorada,1999,0,1,0.61
+entorno2,ordenada,2000,Burbuja bidireccional,1999,0,1,0.6
+entorno2,ordenada,2000,Burbuja par-impar,1999,0,2,0.61
+entorno2,ordenada,2000,Burbuja de peine,43383,0,25,13.24
+entorno2,ordenada,2000,Burbuja en lista enlazada,1999,0,1,0.97
+entorno2,invertida,100,Burbuja clásica,9801,4950,99,3.48
+entorno2,invertida,100,Burbuja mejorada,4950,4950,99,2.11
+entorno2,invertida,100,Burbuja bidireccional,4950,4950,100,2.06
+entorno2,invertida,100,Burbuja par-impar,5049,4950,102,2.1
+entorno2,invertida,100,Burbuja de peine,1102,122,14,0.34
+entorno2,invertida,100,Burbuja en lista enlazada,4950,4950,99,2.04
+entorno2,invertida,500,Burbuja clásica,249001,124750,499,90.16
+entorno2,invertida,500,Burbuja mejorada,124750,124750,499,53.61
+entorno2,invertida,500,Burbuja bidireccional,124750,124750,500,53.58
+entorno2,invertida,500,Burbuja par-impar,125249,124750,502,53.9
+entorno2,invertida,500,Burbuja de peine,8871,730,21,2.72
+entorno2,invertida,500,Burbuja en lista enlazada,124750,124750,499,51.29
+entorno2,invertida,1000,Burbuja clásica,998001,499500,999,369.14
+entorno2,invertida,1000,Burbuja mejorada,499500,499500,999,216.92
+entorno2,invertida,1000,Burbuja bidireccional,499500,499500,1000,220.48
+entorno2,invertida,1000,Burbuja par-impar,500499,499500,1002,222.17
+entorno2,invertida,1000,Burbuja de peine,19712,1582,23,6.13
+entorno2,invertida,1000,Burbuja en lista enlazada,499500,499500,999,208.34
+entorno2,invertida,2000,Burbuja clásica,3996001,1999000,1999,1491.58
+entorno2,invertida,2000,Burbuja mejorada,1999000,1999000,1999,881.11
+entorno2,invertida,2000,Burbuja bidireccional,1999000,1999000,2000,880.59
+entorno2,invertida,2000,Burbuja par-impar,2000999,1999000,2002,900.44
+entorno2,invertida,2000,Burbuja de peine,45382,3436,26,14.14
+entorno2,invertida,2000,Burbuja en lista enlazada,1999000,1999000,1999,829.86
