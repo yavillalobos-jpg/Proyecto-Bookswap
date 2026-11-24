@@ -13,7 +13,7 @@ Docente: Jose Duran Garcia
 - Python con Flask
 - HTML con Tailwind CSS
 - Almacenamiento en JSON (`datos.json`)
-- Programación estructurada: solo funciones y listas, sin clases
+- Programación estructurada: solo funciones y listas
 
 ## Estructuras de datos
 | Estructura | Archivo | Uso en la página |
