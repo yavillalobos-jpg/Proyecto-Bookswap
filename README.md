@@ -10,7 +10,7 @@ Página web para que estudiantes de distintas universidades vendan, intercambien
 Docente: Jose Duran Garcia
 
 ## Tecnologías
-- Python 3 con Flask
+- Python con Flask
 - HTML con Tailwind CSS
 - Almacenamiento en JSON (`datos.json`)
 - Programación estructurada: solo funciones y listas, sin clases
